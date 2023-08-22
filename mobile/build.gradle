@@ -1,0 +1,103 @@
+
+
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+}
+
+android {
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "com.arcxp.thearcxptv"
+        minSdk 23
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        resValue "string", "facebook_app_id", System.getenv("facebook_app_id") ?: localProperties['facebook_app_id'] ?: ""
+        resValue "string", "fb_login_protocol_scheme", System.getenv("fb_login_protocol_scheme") ?: localProperties['fb_login_protocol_scheme'] ?: ""
+        resValue "string", "facebook_client_token", System.getenv("facebook_client_token") ?: localProperties['facebook_client_token'] ?: ""
+    }
+
+    signingConfigs {
+        debug {
+            if (rootProject.file("commerce.keystore").exists()) {
+                storeFile file(System.getenv('HOME') + '/keystores/commerce.keystore') ?: rootProject.file("commerce.keystore")
+                keyAlias System.getenv("keyAlias") ?: localProperties['keyAlias']
+                keyPassword System.getenv("keyPassword") ?: localProperties['keyPassword']
+                storePassword System.getenv("storePassword") ?: localProperties['storePassword']
+            }
+        }
+        release {
+            storeFile file(System.getenv('HOME') + '/keystores/commerce.keystore') ?: rootProject.file("commerce.keystore")
+            keyAlias System.getenv("keyAlias") ?: localProperties['keyAlias']
+            keyPassword System.getenv("keyPassword") ?: localProperties['keyPassword']
+            storePassword System.getenv("storePassword") ?: localProperties['storePassword']
+        }
+    }
+
+    buildTypes {
+        debug {
+            versionNameSuffix ".debug"
+            resValue "string", "app_version", "App: $app_version$versionNameSuffix"
+            resValue "string", "google_key", localProperties['debug_google_key'] ?: ""
+            signingConfig signingConfigs.debug
+        }
+        release {
+            resValue "string", "app_version", "App: $app_version"
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            resValue "string", "google_key", System.getenv("google_key") ?: localProperties['google_key'] ?: ""
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    flavorDimensions "version"
+    productFlavors {
+        arcPartners {}
+        arcXPInternal {}
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+
+    //include sdks
+    //for client implementations, just use 'implementation ..' instead of creating/using arcPartnersImplementation flavor
+    arcPartnersImplementation 'arcxp-sdk-android:arcxp-content-sdk-android:1.0.0'
+    arcPartnersImplementation 'arcxp-sdk-android:arcxp-commerce-sdk-android:1.0.0'
+    arcPartnersImplementation 'arcxp-sdk-android:arcxp-video-sdk-android:1.5.9'
+
+    //internal use only!
+    arcXPInternalImplementation project(":arcxp-content-sdk-android")
+    arcXPInternalImplementation project(":arcxp-commerce-sdk-android")
+    arcXPInternalImplementation project(":arcxp-video-sdk-android")
+
+    implementation "com.google.android.exoplayer:exoplayer-ui:2.17.1"
+}
+
+def getLocalProperties() {
+    def localProperties = new Properties()
+    if (rootProject.file("local.properties").exists()) {
+        localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+    }
+    return localProperties
+}

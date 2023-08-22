@@ -1,0 +1,48 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    repositories {
+        google()
+        mavenCentral()
+
+        //for sdk dependencies from maven
+//        maven {
+//            credentials {
+//                username "$mavenUser"
+//                password "$mavenPassword"
+//            }
+//            url 'https://washingtonpost.jfrog.io/washingtonpost/arc-sdk-android'
+//        }
+
+        //for sdk dependencies from local directory
+        maven {
+            url "${rootDir}/arcxp-libs/"
+        }
+
+        //for video sdk internal debug flavor only
+        maven {
+            url "${rootDir}/arcxp-video-sdk-android/pal_sdk_repo"
+        }
+        maven {
+            url "${rootDir}/arcxp-video-sdk-android/om_sdk_repo"
+        }
+    }
+}
+rootProject.name = "The ArcXP TV"
+include ':mobile'
+include ':tv'
+
+//client implementation can ignore the following, for internal use only:
+try {
+    include ':arcxp-content-sdk-android', ':arcxp-commerce-sdk-android', ':arcxp-video-sdk-android'
+} catch(Exception ignored) {
+    //safe to ignore in default arcPartnersDebug flavor
+    //submodules are only for internal use only
+}

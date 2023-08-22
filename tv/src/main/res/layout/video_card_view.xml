@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:lb="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    lb:layout_viewType="main">
+
+    <FrameLayout
+        android:id="@+id/image_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        lb:layout_constraintBottom_toTopOf="@id/guideline"
+        lb:layout_constraintEnd_toEndOf="parent"
+        lb:layout_constraintStart_toStartOf="parent"
+        lb:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/main_image"
+            style="@style/DefaultCardImageStyle"
+            android:adjustViewBounds="true"
+            android:padding="1dp"
+            android:scaleType="center" />
+
+        <ImageView
+            android:id="@+id/main_image_overlay"
+            style="@style/DefaultCardImageStyle"
+            android:adjustViewBounds="true"
+            android:background="@drawable/video_card_view_selector"
+            android:scaleType="center" />
+
+    </FrameLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.75" />
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/LiveTitleTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:ellipsize="end"
+        android:lines="1"
+        lb:layout_constraintBottom_toBottomOf="parent"
+        lb:layout_constraintEnd_toEndOf="parent"
+        lb:layout_constraintStart_toStartOf="parent"
+        lb:layout_constraintTop_toBottomOf="@id/guideline"
+        tools:text="Example Title of Video" />
+
+    <ProgressBar
+        android:id="@+id/watched_progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="202dp"
+        android:layout_height="4dp"
+        android:layout_marginBottom="5dp"
+        android:progressDrawable="@drawable/progress_drawable"
+        lb:layout_constraintBottom_toBottomOf="@id/image_layout"
+        lb:layout_constraintEnd_toEndOf="parent"
+        android:visibility="invisible"
+        lb:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,110 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+}
+
+android {
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "com.arcxp.thearcxptv"
+        minSdk 23
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+
+        resValue "string", "facebook_app_id", System.getenv("facebook_app_id") ?: localProperties['facebook_app_id'] ?: ""
+        resValue "string", "fb_login_protocol_scheme", System.getenv("fb_login_protocol_scheme") ?: localProperties['fb_login_protocol_scheme'] ?: ""
+        resValue "string", "facebook_client_token", System.getenv("facebook_client_token") ?: localProperties['facebook_client_token'] ?: ""
+        resValue "string", "resizer_key", System.getenv("resizer_key") ?: localProperties['resizer_key'] ?: ""
+
+    }
+
+    signingConfigs {
+        debug {
+            if (rootProject.file("commerce.keystore").exists()) {
+                storeFile file(System.getenv('HOME') + '/keystores/commerce.keystore') ?: rootProject.file("commerce.keystore")
+                keyAlias System.getenv("keyAlias") ?: localProperties['keyAlias']
+                keyPassword System.getenv("keyPassword") ?: localProperties['keyPassword']
+                storePassword System.getenv("storePassword") ?: localProperties['storePassword']
+            }
+        }
+        release {
+            storeFile file(System.getenv('HOME') + '/keystores/commerce.keystore') ?: rootProject.file("commerce.keystore")
+            keyAlias System.getenv("keyAlias") ?: localProperties['keyAlias']
+            keyPassword System.getenv("keyPassword") ?: localProperties['keyPassword']
+            storePassword System.getenv("storePassword") ?: localProperties['storePassword']
+        }
+    }
+
+    buildTypes {
+        debug {
+            versionNameSuffix ".debug"
+            resValue "string", "app_version", "App: $app_version$versionNameSuffix"
+            resValue "string", "google_key", localProperties['debug_google_key'] ?: ""
+            signingConfig signingConfigs.debug
+        }
+        release {
+            resValue "string", "app_version", "App: $app_version"
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            resValue "string", "google_key", System.getenv("google_key") ?: localProperties['google_key'] ?: ""
+        }
+    }
+
+    flavorDimensions "version"
+    productFlavors {
+        arcPartners {}
+        arcXPInternal {}
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+
+    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.leanback:leanback:1.1.0-rc02'
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+
+    //include sdks
+    //for client implementations, just use 'implementation ..' instead of creating/using arcPartnersImplementation flavor
+    arcPartnersImplementation 'arcxp-sdk-android:arcxp-content-sdk-android:1.0.3'
+    arcPartnersImplementation 'arcxp-sdk-android:arcxp-commerce-sdk-android:1.0.2'
+    arcPartnersImplementation 'arcxp-sdk-android:arcxp-video-sdk-android:1.6.0'
+
+    //internal use only!
+    arcXPInternalImplementation project(":arcxp-content-sdk-android")
+    arcXPInternalImplementation project(":arcxp-commerce-sdk-android")
+    arcXPInternalImplementation project(":arcxp-video-sdk-android")
+
+    implementation 'androidx.fragment:fragment-ktx:1.5.2'
+
+    def room_version = "2.4.3"
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
+    def koin_version= "3.2.0"
+    // Koin Core features
+    implementation "io.insert-koin:koin-core:$koin_version"
+    implementation "io.insert-koin:koin-android-compat:$koin_version"
+    // Koin Test features
+    testImplementation "io.insert-koin:koin-test:$koin_version"
+
+    implementation "androidx.leanback:leanback-tab:1.1.0-beta01"
+}
+
+def getLocalProperties() {
+    def localProperties = new Properties()
+    if (rootProject.file("local.properties").exists()) {
+        localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+    }
+    return localProperties
+}

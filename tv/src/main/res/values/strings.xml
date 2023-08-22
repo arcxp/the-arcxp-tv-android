@@ -1,0 +1,78 @@
+<resources>
+    <string name="app_name">The ArcXP TV</string>
+    <string name="browse_title">The ArcXP</string>
+    <string name="related_movies">Related Videos</string>
+    <string name="grid_view">Grid View</string>
+    <string name="error_fragment">Error Fragment</string>
+    <string name="personal_settings">Personal Settings</string>
+    <string name="watch_trailer_1">Watch trailer</string>
+    <string name="watch_trailer_2">FREE</string>
+    <string name="rent_1">Rent By Day</string>
+    <string name="rent_2">From $1.99</string>
+    <string name="buy_1">Buy and Own</string>
+    <string name="buy_2">AT $9.99</string>
+    <string name="movie">Movie</string>
+
+    <!-- Error messages -->
+    <string name="error_fragment_message">An error occurred</string>
+    <string name="dismiss_error">Dismiss</string>
+
+    <string name="orgName">arcsales</string>
+    <string name="environment">sandbox</string>
+    <string name="siteName">arcsales</string>
+    <string name="commerceUrl">https://arcsales-arcsales-sandbox.api.cdn.arcpublishing.com</string>
+    <string name="contentUrl">https://arcsales-arcsales-sandbox.web.arc-cdn.net</string>
+    <string name="navigation_endpoint">mobile-tv</string>
+
+
+    <string name="share_message">Share not implemented yet</string>
+    <string name="device_type">mobile</string>
+    <string name="paywall">Paywall</string>
+    <string name="video_load_error">Could not load video.</string>
+
+    <string name="no_search_results">No results found</string>
+    <string name="continue_reading_tv">Create Account to continue reading.</string>
+    <string name="have_account_tv">Already have an account?</string>
+    <string name="signIn_tv">Sign in</string>
+    <string name="get_story_tv">Get every story</string>
+    <string name="tv_8"><![CDATA[You can <b>cancel anytime.</b>]]></string>
+    <string name="account">Account</string>
+    <string name="hometag">home</string>
+    <string name="accounttag">account</string>
+    <string name="videotag">video</string>
+    <string name="create_account">Create Account</string>
+
+    <string name="tos_url">https://www.washingtonpost.com/terms-of-service/2011/11/18/gIQAldiYiN_story.html</string>
+    <string name="pp_url">https://www.washingtonpost.com/privacy-policy/2011/11/18/gIQASIiaiN_story.html</string>
+    <string name="policies">Policies</string>
+    <string name="software_versions">Software Versions</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="terms_of_service">Terms of Service</string>
+    <string name="restart_button_description">Start Over</string>
+    <string name="live_event_ended_error_description">This Live Event has ended.</string>
+    <string name="video_playback_error_text">Video PlayBack Error</string>
+    <string name="live_videos_row_title">Live Videos</string>
+    <string name="watching_videos_row_title">Continue Watching</string>
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
+    <string name="change_password">Change Password</string>
+    <string name="resume">Resume</string>
+    <string name="play">Play</string>
+    <string name="watch_again">Watch Again</string>
+    <string name="live_banner_thumbnail_text">Live</string>
+    <string name="live_video_thumbnail_content_desc">Live Video Thumbnail Image</string>
+
+    <string name="search_hint">Search for videos</string>
+    <string name="search_label">The ArcXP</string>
+    <string name="settings_description">The ArcXP</string>
+
+    <string name="exit_dialog_message">Are you sure you want to exit The ArcXP?</string>
+    <string name="exit_dialog_ok">Yes</string>
+    <string name="exit_dialog_cancel">No</string>
+
+    <string name="virtual_channel_uuid">62a89e9adadf760a8fadfaaf</string>
+    <string name="virtual_channel_row_title">Virtual Channels</string>
+
+    <string name="loading_content_description">content is loading..</string>
+
+</resources>

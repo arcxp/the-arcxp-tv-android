@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:lb="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    lb:layout_viewType="main">
+
+    <ImageView
+        android:id="@+id/main_image"
+        android:scaleType="center"
+        style="@style/DefaultCardImageStyle"
+        lb:layout_constraintTop_toTopOf="parent"
+        lb:layout_constraintEnd_toEndOf="parent"
+        lb:layout_constraintStart_toStartOf="parent"
+        lb:layout_constraintBottom_toTopOf="@id/guideline"
+        android:contentDescription="@string/live_video_thumbnail_content_desc" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.8"/>
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        style="@style/LiveTitleTextView"
+        tools:text="Example Title of Video"
+        lb:layout_constraintBottom_toBottomOf="parent"
+        lb:layout_constraintTop_toBottomOf="@id/guideline"
+        lb:layout_constraintEnd_toEndOf="parent"
+        lb:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/live_banner"
+        style="@style/LiveBannerTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/live_banner_thumbnail_text"
+        lb:layout_constraintEnd_toEndOf="@id/main_image"
+        lb:layout_constraintTop_toTopOf="@id/main_image" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
