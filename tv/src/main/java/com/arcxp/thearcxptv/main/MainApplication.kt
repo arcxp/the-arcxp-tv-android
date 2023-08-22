@@ -15,7 +15,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 
-class MainApplication: Application() {
+class MainApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
@@ -43,7 +43,12 @@ class MainApplication: Application() {
         ArcXPContentSDK.initialize(this, contentConfig)
 
 
-        ArcXPVideoSDK.initialize(this, getString(R.string.contentUrl),getString(R.string.orgName), getString(R.string.environment))
+        ArcXPVideoSDK.initialize(
+            application = this,
+            baseUrl = getString(R.string.contentUrl),
+            org = getString(R.string.orgName),
+            env = getString(R.string.environment)
+        )
         //If the client code caches UUID, refresh token and access token they can
         //be passed into the SDK using this variable
         val commerceAuthData = mutableMapOf<String, String>()
@@ -74,13 +79,13 @@ class MainApplication: Application() {
          */
         //ArcXPCommerceSDK.initialize(this, commerceAuthData, arcCommerceConfig)
 
-        startKoin{
+        startKoin {
             androidContext(this@MainApplication)
             modules(listOf(appModule))
         }
     }
 
-    private val appModule : Module = module {
+    private val appModule: Module = module {
         single {
             Room.databaseBuilder(
                 get(),
@@ -92,7 +97,7 @@ class MainApplication: Application() {
             database.rememberVideoDao()
         }
         viewModel {
-            MainViewModel(application = get(), videoDao = get() )
+            MainViewModel(application = get(), videoDao = get())
         }
     }
 

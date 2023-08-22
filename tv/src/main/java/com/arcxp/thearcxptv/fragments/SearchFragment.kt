@@ -8,6 +8,8 @@ import androidx.leanback.widget.FocusHighlight.ZOOM_FACTOR_SMALL
 import androidx.lifecycle.lifecycleScope
 import com.arcxp.content.sdk.ArcXPContentSDK
 import com.arcxp.content.sdk.extendedModels.*
+import com.arcxp.content.sdk.models.ArcXPContentError
+import com.arcxp.content.sdk.models.ArcXPContentSDKErrorType
 import com.arcxp.content.sdk.util.Failure
 import com.arcxp.content.sdk.util.Success
 import com.arcxp.thearcxptv.BaseFragmentInterface
@@ -80,6 +82,7 @@ class SearchFragment : SearchSupportFragment(), SearchSupportFragment.SearchResu
                         populateData(it.success)
                     }
                     is Failure -> {
+                        showSnackBar(ArcXPContentError(ArcXPContentSDKErrorType.SERVER_ERROR, it.failure.message), requireView(), R.id.error_message, false, requireActivity())
                     }
                 }
 
@@ -115,7 +118,7 @@ class SearchFragment : SearchSupportFragment(), SearchSupportFragment.SearchResu
         }
     }
 
-    override fun onBackPressedHandler(): Boolean {
+    override fun isOnBackPressed(): Boolean {
         return false
     }
 

@@ -74,5 +74,9 @@
     <string name="virtual_channel_row_title">Virtual Channels</string>
 
     <string name="loading_content_description">content is loading..</string>
+    <string name="exit_error">Exit App</string>
+    <string name="live_video_error">Error with Live Videos</string>
+    <string name="video_failed">Could not play video</string>
+    <string name="error_title">Error</string>
 
 </resources>

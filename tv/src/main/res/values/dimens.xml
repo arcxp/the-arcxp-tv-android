@@ -45,4 +45,6 @@
 
     <dimen name="lb_search_bar_text_size" tools:override="true">18sp</dimen>
 
+    <dimen name="default_card_image_padding">1dp</dimen>
+
 </resources>

@@ -63,10 +63,7 @@ class LiveCardView(context: Context) : BaseCardView(context, null, R.style.Defau
                 .asBitmap()
                 .transform(CenterCrop(), RoundedCorners(30))
                 .load(card.fallback)
-                .error(Glide.with(context)
-                    .asBitmap()
-                    .transform(FitCenter(), RoundedCorners(50))
-                    .load(R.drawable.ic_baseline_error_24_black)))
+                .error(R.drawable.ic_baseline_error_24_black))
             .into(imageView)
     }
 }

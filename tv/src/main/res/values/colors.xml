@@ -1,25 +1,40 @@
 <resources>
-    <color name="background_gradient_start">#00000000</color>
-    <color name="background_gradient_end">#F2000000</color>
-    <color name="fastlane_background">#0096a6</color>
-    <color name="search_opaque">#ffaa3f</color>
-    <color name="selected_background">#ffaa3f</color>
-    <color name="default_background">#3d3d3d</color>
-
     <color name="black">#FF000000</color>
+    <color name="grey">#646464</color>
     <color name="white">#FFFFFF</color>
+    <color name="tangerine">#ffaa3f</color>
     <color name="transparent">#00000000</color>
+    <color name="blue">#2196F3</color>
+    <color name="dark_blue">#ff032240</color>
+    <color name="red">#FF0000</color>
+    <color name="semi_transparent_grey">#99000000</color>
+
+
+    <color name="unselected_video_overlay">@color/semi_transparent_grey</color>
 
     <color name="primary_dark">#00796b</color>
     <color name="primary">#009688</color>
     <color name="accent">#00796b</color>
-    <color name="background_color">#ffffff</color>
-    <color name="dark_grey">#7F000000</color>
-    <color name="light_grey">#FBFBFB</color>
-    <color name="grey">#646464</color>
-    <color name="main_background">#22000000</color>
+    <color name="hero_background_gradient_start">@color/transparent</color>
+    <color name="hero_background_gradient_end">@color/black</color>
 
-    <color name="blue">#2196F3</color>
-    <color name="background_blue">#ff032240</color>
+    <color name="text_color">@color/white</color>
+    <color name="text_shadow">@color/grey</color>
+    <color name="tab_color">@color/white</color>
+    <color name="settings_background">#22000000</color>
+    <color name="empty_card_placeholder">@color/black</color>
+    <color name="paywall_text_color">@color/black</color>
+    <color name="title_selected">@color/white</color>
+    <color name="title_unselected">@color/grey</color>
+    <color name="fallback_background">@color/black</color>
+    <color name="fallback_border">@color/white</color>
+    <color name="exit_button">@color/black</color>
+    <color name="search_background">@color/white</color>
+    <color name="exit_button_selected">@color/black</color>
+
+    <color name="splashscreen_background">@color/dark_blue</color>
+    <color name="paywall_button">@color/tangerine</color>
+
+    <color name="error">@color/red</color>
 
 </resources>

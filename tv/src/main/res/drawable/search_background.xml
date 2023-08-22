@@ -4,7 +4,7 @@
         <shape android:shape="rectangle">
             <corners android:radius="20dp"/>
             <stroke android:color="@color/accent" android:width="2dp"/>
-            <solid android:color="@color/white"/>
+            <solid android:color="@color/search_background"/>
         </shape>
     </item>
 </layer-list>

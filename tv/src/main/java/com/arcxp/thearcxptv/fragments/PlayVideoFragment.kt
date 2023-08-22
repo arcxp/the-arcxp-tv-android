@@ -3,13 +3,12 @@ package com.arcxp.thearcxptv.fragments
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.arc.arcvideo.ArcMediaPlayerConfig
 import com.arc.arcvideo.listeners.ArcVideoEventsListener
 import com.arc.arcvideo.model.ArcVideoStream
 import com.arc.arcvideo.model.ArcVideoStreamVirtualChannel
@@ -18,20 +17,23 @@ import com.arc.arcvideo.model.TrackingType.ON_PLAY_COMPLETED
 import com.arc.arcvideo.model.TrackingType.ON_PLAY_STARTED
 import com.arc.arcvideo.model.TrackingTypeData
 import com.arc.arcvideo.util.isLive
+import com.arcxp.content.sdk.models.ArcXPContentError
+import com.arcxp.content.sdk.models.ArcXPContentSDKErrorType
 import com.arcxp.content.sdk.util.Failure
 import com.arcxp.content.sdk.util.Success
+import com.arcxp.thearcxptv.BaseFragmentInterface
 import com.arcxp.thearcxptv.R
 import com.arcxp.thearcxptv.databinding.FragmentPlayvideoBinding
 import com.arcxp.thearcxptv.main.MainViewModel
+import com.arcxp.thearcxptv.utils.TAG
 import com.arcxp.thearcxptv.utils.collectLatestLifeCycleFlow
-import com.arcxp.thearcxptv.utils.toast
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class PlayVideoFragment : Fragment() {
+
+class PlayVideoFragment : Fragment(), BaseFragmentInterface {
     val vm: MainViewModel by sharedViewModel()
     private var _binding: FragmentPlayvideoBinding? = null
     private val binding get() = _binding!!
-
 
     private lateinit var uuid: String
     private var startPosition = 0
@@ -77,7 +79,11 @@ class PlayVideoFragment : Fragment() {
             collectLatestLifeCycleFlow(flow = vm.videoResultEvent) {
                 when (it) {
                     is Success -> playVideo(arcVideoStream = it.success)
-                    is Failure -> onError()
+                    is Failure -> {
+                        onError(ArcXPContentError(ArcXPContentSDKErrorType.SERVER_ERROR, getString(
+                                            R.string.video_failed)))
+                        Log.e(TAG, "onViewCreated: Video failed to play - ${it.failure.message}")
+                    }
                 }
             }
         }
@@ -96,7 +102,6 @@ class PlayVideoFragment : Fragment() {
         vm.arcMediaPlayerConfigBuilder.setStartMuted(muted = false)
         vm.arcMediaPlayerConfigBuilder.setShouldShowVolumeButton(showVolumeButton = false)
         vm.arcMediaPlayerConfigBuilder.setShouldShowTitleOnControls(shouldShowTitleOnControls = true)
-//        vm.arcMediaPlayerConfigBuilder.setDisableControlsToggleWithTouch(disable = true)
         vm.arcMediaPlayer?.configureMediaPlayer(config = vm.arcMediaPlayerConfigBuilder.build())
         setVideoTracking()
         if (isThisVirtualChannel) {
@@ -108,10 +113,8 @@ class PlayVideoFragment : Fragment() {
 
     private fun playVideo(arcVideoStream: ArcVideoStream) {
         isThisVideoLive = arcVideoStream.isLive()
-
         if (arcVideoStream.status == "ended") {
-            toast(text = getString(R.string.live_event_ended_error_description), long = true)
-            returnHome()
+            onError(ArcXPContentError(ArcXPContentSDKErrorType.SERVER_ERROR, getString(R.string.live_event_ended_error_description)))
         }
         vm.arcMediaPlayer?.initMedia(video = arcVideoStream)
         vm.arcMediaPlayer?.seekTo(ms = startPosition)
@@ -171,13 +174,9 @@ class PlayVideoFragment : Fragment() {
         })
     }
 
-    private fun onError(/*error: ArcXPContentError*/) {
-        toast(text = getString(R.string.video_playback_error_text), long = true)
+    private fun onError(error: ArcXPContentError) {
         returnHome()
-    }
-
-    private fun showSpinner(visible: Boolean) {
-        binding.progressBar.isVisible = visible
+        showSnackBar(error, binding.root, R.id.error_message, false, requireActivity())
     }
 
     override fun onDestroyView() {
@@ -185,7 +184,7 @@ class PlayVideoFragment : Fragment() {
         _binding = null
     }
 
-    fun onBackPressedHandler() {
+   fun onBackPressedHandler() {
         if (videoHasStartedPlayback && vm.arcMediaPlayer?.isControlsVisible == true) {
             vm.arcMediaPlayer?.hideControls()
         } else {
@@ -201,6 +200,7 @@ class PlayVideoFragment : Fragment() {
     }
 
     private fun returnHome() {
+        vm.cleanupVideoOnClose()
         parentFragmentManager.popBackStack()//return to details
         parentFragmentManager.popBackStack()//return home
     }
@@ -235,5 +235,9 @@ class PlayVideoFragment : Fragment() {
 
             return fragment
         }
+    }
+
+    override fun isOnBackPressed(): Boolean {
+        return false
     }
 }

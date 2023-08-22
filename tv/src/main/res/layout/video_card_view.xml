@@ -19,16 +19,14 @@
         <ImageView
             android:id="@+id/main_image"
             style="@style/DefaultCardImageStyle"
+            android:scaleType="fitCenter"
             android:adjustViewBounds="true"
-            android:padding="1dp"
-            android:scaleType="center" />
-
+            android:padding="1dp"/>
         <ImageView
             android:id="@+id/main_image_overlay"
             style="@style/DefaultCardImageStyle"
-            android:adjustViewBounds="true"
             android:background="@drawable/video_card_view_selector"
-            android:scaleType="center" />
+            />
 
     </FrameLayout>
 

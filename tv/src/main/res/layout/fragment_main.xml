@@ -11,8 +11,7 @@
         android:id="@+id/content_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:background="@color/main_background">
+        android:visibility="gone">
 
         <androidx.leanback.tab.LeanbackViewPager
             android:id="@+id/pager"
@@ -45,15 +44,15 @@
         android:id="@+id/loading_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background_blue">
+        android:background="@color/splashscreen_background">
 
         <ImageView
             android:id="@+id/logo"
             android:layout_width="400dp"
             android:layout_height="200dp"
-            android:src="@drawable/splash_screen_logo"
+            android:layout_above="@id/logo"
             android:layout_centerHorizontal="true"
-            android:layout_above="@id/logo"/>
+            android:src="@drawable/splash_screen_logo" />
 
         <ProgressBar
             android:id="@+id/progressBar"

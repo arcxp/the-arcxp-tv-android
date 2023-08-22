@@ -1,6 +1,7 @@
 package com.arcxp.thearcxptv.main
 
 import android.app.Application
+import android.util.Log
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
@@ -9,9 +10,9 @@ import com.arc.arcvideo.model.*
 import com.arcxp.commerce.ArcXPCommerceSDK
 import com.arcxp.commerce.ArcXPPageviewEvaluationResult
 import com.arcxp.commerce.apimanagers.ArcXPIdentityListener
+import com.arcxp.commerce.extendedModels.ArcXPProfileManage
 import com.arcxp.commerce.models.ArcXPAuth
 import com.arcxp.commerce.models.ArcXPIdentity
-import com.arcxp.commerce.models.ArcXPProfileManage
 import com.arcxp.commerce.models.ArcXPUser
 import com.arcxp.commerce.util.ArcXPError
 import com.arcxp.content.sdk.ArcXPContentSDK
@@ -30,7 +31,9 @@ import com.arcxp.thearcxptv.fragments.HomeFragment
 import com.arcxp.thearcxptv.fragments.SearchFragment
 import com.arcxp.thearcxptv.fragments.SettingsFragment
 import com.arcxp.thearcxptv.models.LiveVideo
+import com.arcxp.thearcxptv.utils.TAG
 import com.arcxp.thearcxptv.utils.getDateString
+import com.arcxp.thearcxptv.utils.log
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
@@ -79,8 +82,12 @@ class MainViewModel(application: Application, val videoDao: RememberVideoDao) :
             videoResultsFlow.collectLatest {
                 if (it is com.arc.arcvideo.util.Success) {
                     handleLiveVideos(videos = it.r)
-                } else {
-                    //handle an error
+                } else if (it is com.arc.arcvideo.util.Failure) {
+                    Log.e(
+                        TAG,
+                        it.l.message ?: it.l.localizedMessage
+                        ?: application.getString(R.string.live_video_error)
+                    )
                 }
             }
         }
@@ -96,6 +103,7 @@ class MainViewModel(application: Application, val videoDao: RememberVideoDao) :
                         message: String,
                         value: Any?
                     ) {
+                        Log.e(TAG, "Virtual Channel error: $message")
                     }
 
                     override fun onVideoStreamVirtual(arcVideoStreamVirtualChannel: ArcVideoStreamVirtualChannel?) {
@@ -110,8 +118,10 @@ class MainViewModel(application: Application, val videoDao: RememberVideoDao) :
     }
 
     //results of collection calls will come here, with size of site service result
-    private val _collectionResults = mutableListOf<MutableLiveData<List<ArcXPCollection>>>()
-    val collectionResults: List<LiveData<List<ArcXPCollection>>> = _collectionResults
+    private val _collectionResults =
+        mutableListOf<MutableLiveData<Either<ArcXPContentError, Map<Int, ArcXPCollection>>>>()
+    val collectionResults: List<LiveData<Either<ArcXPContentError, Map<Int, ArcXPCollection>>>> =
+        _collectionResults
 
     //Event observed by PlayVideoFragment to request video by id from Video Center
     private val _videoResultEvent = MutableSharedFlow<Either<ArcXPContentError, ArcVideoStream>>(
@@ -169,7 +179,9 @@ class MainViewModel(application: Application, val videoDao: RememberVideoDao) :
                             )
                         }
                     }
-                    else -> {}
+                    is Failure -> {
+                        Log.e(TAG, "checkAndAdd: ${currentVideo.failure.message}")
+                    }
                 }
 
             }
@@ -248,7 +260,7 @@ class MainViewModel(application: Application, val videoDao: RememberVideoDao) :
                         // we initialize our row
                         //we add three potential slots for our dynamic rows: live, virtual channels, and continue watching
                         repeat(times = this.success.size) {
-                            _collectionResults.add(MutableLiveData<List<ArcXPCollection>>())
+                            _collectionResults.add(MutableLiveData<Either<ArcXPContentError, Map<Int, ArcXPCollection>>>())
                         }
                         //at this point we know how many sections we have from site service and can signal to app with this count to create rows
                         _sectionsLoadEvent.postValue(Success(success = this.success.map { it.name }))
@@ -262,14 +274,15 @@ class MainViewModel(application: Application, val videoDao: RememberVideoDao) :
                                     val sectionResult =
                                         ArcXPContentSDK.contentManager()
                                             .getCollectionSuspend(id = id)
-                                    if (sectionResult is Success) {
-                                        _collectionResults[index].postValue(sectionResult.success.values.toList())
-                                    }
-                                }
-                            )
+                                    _collectionResults[index].postValue(sectionResult)
+                                })
                         }
+
+
                     }
-                    is Failure -> {}
+                    is Failure -> {
+                        _sectionsLoadEvent.postValue(Failure(failure = this.failure))
+                    }
                 }
             }
         }
@@ -474,13 +487,12 @@ class MainViewModel(application: Application, val videoDao: RememberVideoDao) :
     }
 
     fun findLiveFlow(duration: Duration = 15.toDuration(unit = DurationUnit.SECONDS)) = flow {
-        if (!findingLiveVideos) {
-            findingLiveVideos = true
-            while (findingLiveVideos) {
-                emit(value = Unit)
-                videoResultsFlow.value = videoClient.findLiveSuspend()
-                delay(duration = duration)
-            }
+        findingLiveVideos = true
+        while (findingLiveVideos) {
+            emit(value = Unit)
+            videoResultsFlow.value = videoClient.findLiveSuspend()
+            log("calling findLive")
+            delay(duration = duration)
         }
     }
 
@@ -510,8 +522,6 @@ class MainViewModel(application: Application, val videoDao: RememberVideoDao) :
                 )
             }
         }
-
-        arcMediaPlayer?.setFullscreen(full = false)
 
         disposeVideoPlayer()
     }

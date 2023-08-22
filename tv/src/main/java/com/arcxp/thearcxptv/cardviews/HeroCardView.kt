@@ -40,10 +40,7 @@ class HeroCardView(context: Context) : BaseCardView(context, null, R.style.HeroC
             .error(Glide.with(imageView.context)
                 .asBitmap()
                 .load(card.fallback)
-                .error(Glide.with(imageView.context)
-                    .asBitmap()
-                    .transform(FitCenter(), RoundedCorners(50))
-                    .load(R.drawable.ic_baseline_error_24_black)))
+                .error(R.drawable.ic_baseline_error_24_black))
             .into(imageView)
 
         progressBar.visibility = GONE

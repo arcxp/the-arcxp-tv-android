@@ -4,7 +4,7 @@
     <corners android:radius="10dp" />
     <size android:width="@dimen/default_image_card_width"
         android:height="@dimen/default_image_card_height" />
-    <solid android:color="#99000000" />
+    <solid android:color="@color/unselected_video_overlay" />
     <stroke android:color="@color/transparent"
         android:width="2dp" />
 </shape>

@@ -3,11 +3,11 @@
 
     <item>
         <shape>
-            <solid android:color="@color/black"/>
+            <solid android:color="@color/fallback_background"/>
 
             <corners android:radius="5dp" />
             <stroke android:width="3dp"
-                android:color="@color/white"/>
+                android:color="@color/fallback_border"/>
         </shape>
     </item>
 

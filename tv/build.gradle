@@ -4,6 +4,8 @@ plugins {
     id 'kotlin-kapt'
 }
 
+def buildVersion = providers.gradleProperty("app_version")
+
 android {
     compileSdk 33
 
@@ -12,7 +14,7 @@ android {
         minSdk 23
         targetSdk 33
         versionCode 1
-        versionName "1.0"
+        versionName buildVersion.getOrNull() + " Build: " +"${System.getenv("BITRISE_BUILD_NUMBER") ?: "Local"}"
 
         resValue "string", "facebook_app_id", System.getenv("facebook_app_id") ?: localProperties['facebook_app_id'] ?: ""
         resValue "string", "fb_login_protocol_scheme", System.getenv("fb_login_protocol_scheme") ?: localProperties['fb_login_protocol_scheme'] ?: ""
@@ -76,8 +78,8 @@ dependencies {
     //include sdks
     //for client implementations, just use 'implementation ..' instead of creating/using arcPartnersImplementation flavor
     arcPartnersImplementation 'arcxp-sdk-android:arcxp-content-sdk-android:1.0.3'
-    arcPartnersImplementation 'arcxp-sdk-android:arcxp-commerce-sdk-android:1.0.2'
-    arcPartnersImplementation 'arcxp-sdk-android:arcxp-video-sdk-android:1.6.0'
+    arcPartnersImplementation 'arcxp-sdk-android:arcxp-commerce-sdk-android:1.0.3'
+    arcPartnersImplementation 'arcxp-sdk-android:arcxp-video-sdk-android:1.6.2'
 
     //internal use only!
     arcXPInternalImplementation project(":arcxp-content-sdk-android")

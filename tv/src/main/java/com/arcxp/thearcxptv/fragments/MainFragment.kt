@@ -35,7 +35,7 @@ class MainFragment : Fragment() {
 
         requireActivity().onBackPressedDispatcher.addCallback(
             this,
-            object: OnBackPressedCallback(true) {
+            object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     onBackPressedHandler()
                 }
@@ -50,7 +50,7 @@ class MainFragment : Fragment() {
         binding.pager.adapter = PagesAdapter()
         binding.tabLayout.setupWithViewPager(binding.pager)
 
-        binding.tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 vm.setTabPosition(tab!!.position)
             }
@@ -77,12 +77,23 @@ class MainFragment : Fragment() {
                     binding.contentLayout.visibility = VISIBLE
                     binding.loadingLayout.visibility = GONE
                 }
-                is Failure -> {}
+                is Failure -> {
+                    android.app.AlertDialog.Builder(
+                        activity,
+                        android.app.AlertDialog.THEME_DEVICE_DEFAULT_DARK
+                    )
+                        .setTitle(getString(R.string.error_title))
+                        .setMessage(it.failure.message)
+                        .setPositiveButton(getString(R.string.exit_error)) { dialog, which ->
+                            requireActivity().finish()
+                        }
+                        .create().show()
+                }
             }
         }
     }
 
-    private inner class PagesAdapter:
+    private inner class PagesAdapter :
         FragmentPagerAdapter(childFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         override fun getPageTitle(position: Int): CharSequence {
             return vm.fragmentNames[position]
@@ -96,7 +107,7 @@ class MainFragment : Fragment() {
     }
 
     fun onBackPressedHandler() {
-        if (!vm.getCurrentFragment().onBackPressedHandler()) {
+        if (!vm.getCurrentFragment().isOnBackPressed()) {
             val focusedView = requireActivity().currentFocus
 
             if (focusedView is TabLayout.TabView) {

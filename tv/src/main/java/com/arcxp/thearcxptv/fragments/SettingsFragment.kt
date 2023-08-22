@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import com.arc.arcvideo.ArcXPVideoSDK
 import com.arcxp.commerce.ArcXPCommerceSDK
 import com.arcxp.commerce.apimanagers.ArcXPIdentityListener
-import com.arcxp.commerce.models.ArcXPProfileManage
+import com.arcxp.commerce.extendedModels.ArcXPProfileManage
 import com.arcxp.commerce.util.ArcXPError
 import com.arcxp.content.sdk.ArcXPContentSDK
 import com.arcxp.content.sdk.models.ArcXPContentError
@@ -179,7 +179,7 @@ class SettingsFragment : Fragment(), BaseFragmentInterface {
         _binding = null
     }
 
-    override fun onBackPressedHandler(): Boolean {
+    override fun isOnBackPressed(): Boolean {
         val visibleFragment =
             requireActivity().supportFragmentManager.findFragmentById(R.id.mainFragment)
 

@@ -1,6 +1,7 @@
 package com.arcxp.thearcxptv.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.leanback.app.RowsSupportFragment
 import androidx.leanback.widget.*
@@ -10,6 +11,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.arc.arcvideo.model.ArcVideoStreamVirtualChannel
 import com.arcxp.content.sdk.extendedModels.ArcXPCollection
+import com.arcxp.content.sdk.models.ArcXPContentError
+import com.arcxp.content.sdk.models.ArcXPContentSDKErrorType
 import com.arcxp.content.sdk.util.Failure
 import com.arcxp.content.sdk.util.Success
 import com.arcxp.thearcxptv.BaseFragmentInterface
@@ -22,6 +25,7 @@ import com.arcxp.thearcxptv.db.VideoToRemember
 import com.arcxp.thearcxptv.main.MainViewModel
 import com.arcxp.thearcxptv.models.LiveVideo
 import com.arcxp.thearcxptv.utils.CircularArrayObjectAdapter
+import com.arcxp.thearcxptv.utils.TAG
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -29,7 +33,7 @@ class HomeFragment : RowsSupportFragment(), BaseFragmentInterface {
 
     private val vm: MainViewModel by sharedViewModel()
 
-    private val rowsAdapter = ArrayObjectAdapter(object: ListRowPresenter(ZOOM_FACTOR_SMALL) {
+    private val rowsAdapter = ArrayObjectAdapter(object : ListRowPresenter(ZOOM_FACTOR_SMALL) {
         override fun isUsingDefaultListSelectEffect() = false
     }.apply { shadowEnabled = false })
 
@@ -55,26 +59,47 @@ class HomeFragment : RowsSupportFragment(), BaseFragmentInterface {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vm.watchingVideosFromDatabase().observe(viewLifecycleOwner, this::createWatchingRow)
+        vm.watchingVideosFromDatabase().observe(viewLifecycleOwner, ::createWatchingRow)
         adapter = rowsAdapter
 
         vm.virtualChannelLoadedEvent.observe(viewLifecycleOwner) {
             createVirtualChannelRow(channel = it)
         }
+
         vm.sectionsLoadEvent.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     //initialize site service row listeners
                     it.success.indices.forEach { rowIndex ->
                         vm.collectionResults[rowIndex].observe(viewLifecycleOwner) { collectionResult ->
-                            loadRow(
-                                index = rowIndex,
-                                results = collectionResult,
-                                name = it.success[rowIndex]
-                            )
+                            when (collectionResult) {
+                                is Success -> {
+                                    loadRow(
+                                        index = rowIndex,
+                                        results = collectionResult.success.values.toList(),
+                                        name = it.success[rowIndex]
+                                    )
+                                }
+                                is Failure -> {
+                                    showSnackBar(
+                                        ArcXPContentError(
+                                            ArcXPContentSDKErrorType.SERVER_ERROR,
+                                            "Collection call failed for ${it.success[rowIndex]}"
+                                        ),
+                                        requireView(),
+                                        R.id.error_message,
+                                        false,
+                                        requireActivity()
+                                    )
+                                    Log.e(
+                                        TAG,
+                                        "onViewCreated: ${collectionResult.failure.message} - ${it.success[rowIndex]}"
+                                    )
+                                }
+                            }
                         }
-                    }
 
+                    }
                 }
                 is Failure -> {}
             }
@@ -88,7 +113,7 @@ class HomeFragment : RowsSupportFragment(), BaseFragmentInterface {
                 presenter
             )
         }
-        vm.liveVideoResults.observe(viewLifecycleOwner, this::createLiveRow)
+        vm.liveVideoResults.observe(viewLifecycleOwner, ::createDynamicLiveRow)
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 vm.findLiveFlow().collect {}
@@ -143,15 +168,6 @@ class HomeFragment : RowsSupportFragment(), BaseFragmentInterface {
         }
     }
 
-    //loads a row with results findLive endpoint
-    private fun createLiveRow(liveVideos: List<LiveVideo>) =
-        createDynamicRow(
-            items = liveVideos,
-            rowTitle = getString(R.string.live_videos_row_title),
-            presenter = liveCardViewPresenter,
-            position = LIVE_POSITION
-        )
-
     //loads a row with single virtual channel result provided in strings
     private fun createVirtualChannelRow(channel: ArcVideoStreamVirtualChannel) =
         createDynamicRow(
@@ -186,11 +202,53 @@ class HomeFragment : RowsSupportFragment(), BaseFragmentInterface {
                     id = position.toLong()
                 }
             refreshUI()
-        } else if (currentRowData.containsKey(position)) {
+        } else if (currentRowData.containsKey(position)) {// current items for row are empty, so remove row if it is currently displayed:
             currentRowData.remove(position)
             refreshUI()
         } // else do NOT refresh UI
+    }
 
+    private fun createDynamicLiveRow(
+        items: List<LiveVideo>
+    ) {
+        if (items.isNotEmpty()) {
+            val listRowAdapter = ArrayObjectAdapter(liveCardViewPresenter)
+            listRowAdapter.addAll(0, items)
+            var refreshUINow = false
+            if (currentRowData.containsKey(LIVE_POSITION)) {//already have a live row, update row itself instead of all rows
+                val diffCallback = object : DiffCallback<LiveVideo>() {
+                    override fun areItemsTheSame(
+                        oldItem: LiveVideo,
+                        newItem: LiveVideo
+                    ) = oldItem.uuid == newItem.uuid
+
+                    override fun areContentsTheSame(
+                        oldItem: LiveVideo,
+                        newItem: LiveVideo
+                    ) = oldItem == newItem
+                }
+                ((rowsAdapter[LIVE_POSITION] as ListRow).adapter as ArrayObjectAdapter).setItems(
+                    items,
+                    diffCallback
+                )
+                rowsAdapter.notifyArrayItemRangeChanged(LIVE_POSITION, 1)
+            } else { // if we don't have a live row currently, just send everything to be refreshed (will only update the live row):
+                refreshUINow = true
+            }
+            currentRowData[LIVE_POSITION] =
+                ListRow(
+                    HeaderItem(getString(R.string.live_videos_row_title)),
+                    listRowAdapter
+                ).apply {
+                    id = LIVE_POSITION.toLong()
+                }
+            if (refreshUINow) {
+                refreshUI()
+            }
+        } else if (currentRowData.containsKey(LIVE_POSITION)) {//remove entire row from view if new results are empty
+            currentRowData.remove(LIVE_POSITION)
+            refreshUI()
+        } // else do NOT refresh UI
     }
 
     private fun refreshUI(startup: Boolean = false) {
@@ -228,7 +286,7 @@ class HomeFragment : RowsSupportFragment(), BaseFragmentInterface {
         )
     }
 
-    override fun onBackPressedHandler(): Boolean {
+    override fun isOnBackPressed(): Boolean {
         return false
     }
 

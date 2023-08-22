@@ -78,10 +78,7 @@ class VideoCardView @JvmOverloads constructor(context: Context, val vm: MainView
                 .asBitmap()
                 .transform(CenterCrop(), RoundedCorners(20))
                 .load(card.fallback)
-                .error(Glide.with(context)
-                    .asBitmap()
-                    .transform(FitCenter(), RoundedCorners(20))
-                    .load(R.drawable.ic_baseline_error_24_black)))
+                .error(R.drawable.ic_baseline_error_24_black))
             .into(imageView)
 
         length = card.length

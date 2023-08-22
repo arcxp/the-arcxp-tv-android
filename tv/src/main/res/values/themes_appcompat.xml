@@ -82,19 +82,6 @@
 <!--        <item name="pinPickerStyle">@style/Widget.Leanback.PickerStyle.PinPickerStyle</item>-->
     </style>
 
-    <style name="CustomInfoAreaStyle" parent = "Widget.Leanback.ImageCardView.InfoAreaStyle">
-        <item name="android:background">#FF000000</item>
-    </style>
-
-    <style name="CustomImageCardViewStyle" parent="Widget.Leanback.ImageCardViewStyle">
-        <item name="cardType">infoUnder</item>
-        <item name="infoVisibility">activated</item>
-        <!-- In order to keep backward compatibility we have to create an icon on right. -->
-        <item name="lbImageCardViewType">Title|IconOnRight</item>
-        <!-- Deprecated. Use 'Widget.Leanback.ImageCardView.InfoAreaStyle' instead. -->
-        <item name="infoAreaBackground">@null</item>
-    </style>
-
 
     <style name="Theme.AppCompat.Leanback.Browse" parent="Theme.AppCompat.Leanback">
     </style>
@@ -168,10 +155,4 @@
         <item name="onboardingMainIconStyle">@style/Widget.Leanback.OnboardingMainIconStyle</item>
     </style>
 
-    <style name="SearchOrbViewStyle" parent="Widget.Leanback.SearchOrbViewStyle">
-        <item name="searchOrbIcon">?attr/defaultSearchIcon</item>
-        <item name="searchOrbColor">?attr/defaultSearchColor</item>
-        <item name="searchOrbIconColor">?attr/defaultSearchIconColor</item>
-        <item name="searchOrbBrightColor">?attr/defaultSearchBrightColor</item>
-    </style>
 </resources>
