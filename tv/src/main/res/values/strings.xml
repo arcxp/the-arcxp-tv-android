@@ -78,5 +78,6 @@
     <string name="live_video_error">Error with Live Videos</string>
     <string name="video_failed">Could not play video</string>
     <string name="error_title">Error</string>
+    <string name="sdk_colon_version">SDK: %s</string>
 
 </resources>

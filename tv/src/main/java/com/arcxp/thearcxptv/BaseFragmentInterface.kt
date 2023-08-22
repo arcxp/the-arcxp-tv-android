@@ -3,8 +3,6 @@ package com.arcxp.thearcxptv
 import android.app.Activity
 import android.content.res.Configuration
 import android.graphics.Color
-import android.os.Handler
-import android.os.Looper
 import android.text.SpannableStringBuilder
 import android.view.Gravity
 import android.view.View
@@ -12,7 +10,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.text.bold
-import com.arcxp.content.sdk.models.ArcXPContentError
+import com.arcxp.commons.throwables.ArcXPException
 import com.arcxp.thearcxptv.main.MainActivity
 import com.google.android.material.snackbar.Snackbar
 
@@ -21,7 +19,7 @@ interface BaseFragmentInterface {
     fun isOnBackPressed(): Boolean
 
     fun showSnackBar(
-        error: ArcXPContentError,
+        error: ArcXPException,
         view: View,
         viewId: Int,
         dismissible: Boolean = true,
@@ -29,7 +27,7 @@ interface BaseFragmentInterface {
         onDismiss: () -> Unit = {}
     ) {
         val message = SpannableStringBuilder()
-            .bold { append("${error.type.name}:\n") }
+            .bold { append("${error.type?.name}:\n") }
             .append(error.message)
         val snackBar =
             Snackbar.make(view, message, Snackbar.LENGTH_INDEFINITE)

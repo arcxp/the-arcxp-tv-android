@@ -11,10 +11,10 @@ android {
 
     defaultConfig {
         applicationId "com.arcxp.thearcxptv"
-        minSdk 23
+        minSdk 22
         targetSdk 33
         versionCode 1
-        versionName "1.0"
+        versionName project.property("app_version")
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resValue "string", "facebook_app_id", System.getenv("facebook_app_id") ?: localProperties['facebook_app_id'] ?: ""
@@ -82,14 +82,10 @@ dependencies {
 
     //include sdks
     //for client implementations, just use 'implementation ..' instead of creating/using arcPartnersImplementation flavor
-    arcPartnersImplementation 'arcxp-sdk-android:arcxp-content-sdk-android:1.0.0'
-    arcPartnersImplementation 'arcxp-sdk-android:arcxp-commerce-sdk-android:1.0.0'
-    arcPartnersImplementation 'arcxp-sdk-android:arcxp-video-sdk-android:1.5.9'
+    arcPartnersImplementation 'arcxp-sdk-android:arcxp-mobile-sdk-android:1.0.0'
 
     //internal use only!
-    arcXPInternalImplementation project(":arcxp-content-sdk-android")
-    arcXPInternalImplementation project(":arcxp-commerce-sdk-android")
-    arcXPInternalImplementation project(":arcxp-video-sdk-android")
+    arcXPInternalImplementation project(":arcxp-mobile-sdk-android")
 
     implementation "com.google.android.exoplayer:exoplayer-ui:2.17.1"
 }

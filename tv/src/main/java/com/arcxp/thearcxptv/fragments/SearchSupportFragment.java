@@ -32,7 +32,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.CompletionInfo;
 
 import androidx.fragment.app.Fragment;
-import androidx.leanback.R;
 import androidx.leanback.app.BrowseSupportFragment;
 import androidx.leanback.app.RowsSupportFragment;
 import androidx.leanback.widget.BrowseFrameLayout;
@@ -47,6 +46,8 @@ import androidx.leanback.widget.SearchBar;
 import androidx.leanback.widget.SearchOrbView;
 import androidx.leanback.widget.SpeechRecognitionCallback;
 import androidx.leanback.widget.VerticalGridView;
+
+import com.arcxp.thearcxptv.R;
 
 import java.util.ArrayList;
 import java.util.List;

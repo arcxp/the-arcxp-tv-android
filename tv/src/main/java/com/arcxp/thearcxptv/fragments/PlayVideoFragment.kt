@@ -9,24 +9,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import com.arc.arcvideo.listeners.ArcVideoEventsListener
-import com.arc.arcvideo.model.ArcVideoStream
-import com.arc.arcvideo.model.ArcVideoStreamVirtualChannel
-import com.arc.arcvideo.model.TrackingType
-import com.arc.arcvideo.model.TrackingType.ON_PLAY_COMPLETED
-import com.arc.arcvideo.model.TrackingType.ON_PLAY_STARTED
-import com.arc.arcvideo.model.TrackingTypeData
-import com.arc.arcvideo.util.isLive
-import com.arcxp.content.sdk.models.ArcXPContentError
-import com.arcxp.content.sdk.models.ArcXPContentSDKErrorType
-import com.arcxp.content.sdk.util.Failure
-import com.arcxp.content.sdk.util.Success
+import com.arcxp.commons.throwables.ArcXPException
+import com.arcxp.commons.throwables.ArcXPSDKErrorType
+import com.arcxp.commons.util.Failure
+import com.arcxp.commons.util.Success
 import com.arcxp.thearcxptv.BaseFragmentInterface
 import com.arcxp.thearcxptv.R
 import com.arcxp.thearcxptv.databinding.FragmentPlayvideoBinding
 import com.arcxp.thearcxptv.main.MainViewModel
 import com.arcxp.thearcxptv.utils.TAG
 import com.arcxp.thearcxptv.utils.collectLatestLifeCycleFlow
+import com.arcxp.video.listeners.ArcVideoEventsListener
+import com.arcxp.video.model.ArcVideoStream
+import com.arcxp.video.model.ArcVideoStreamVirtualChannel
+import com.arcxp.video.model.TrackingType
+import com.arcxp.video.model.TrackingType.ON_PLAY_COMPLETED
+import com.arcxp.video.model.TrackingType.ON_PLAY_STARTED
+import com.arcxp.video.model.TrackingTypeData
+import com.arcxp.video.util.isLive
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
@@ -80,8 +80,12 @@ class PlayVideoFragment : Fragment(), BaseFragmentInterface {
                 when (it) {
                     is Success -> playVideo(arcVideoStream = it.success)
                     is Failure -> {
-                        onError(ArcXPContentError(ArcXPContentSDKErrorType.SERVER_ERROR, getString(
-                                            R.string.video_failed)))
+                        onError(
+                            ArcXPException(
+                                type = ArcXPSDKErrorType.SERVER_ERROR,
+                                message = getString(R.string.video_failed)
+                            )
+                        )
                         Log.e(TAG, "onViewCreated: Video failed to play - ${it.failure.message}")
                     }
                 }
@@ -114,7 +118,12 @@ class PlayVideoFragment : Fragment(), BaseFragmentInterface {
     private fun playVideo(arcVideoStream: ArcVideoStream) {
         isThisVideoLive = arcVideoStream.isLive()
         if (arcVideoStream.status == "ended") {
-            onError(ArcXPContentError(ArcXPContentSDKErrorType.SERVER_ERROR, getString(R.string.live_event_ended_error_description)))
+            onError(
+                ArcXPException(
+                    type = ArcXPSDKErrorType.SERVER_ERROR,
+                    message = getString(R.string.live_event_ended_error_description)
+                )
+            )
         }
         vm.arcMediaPlayer?.initMedia(video = arcVideoStream)
         vm.arcMediaPlayer?.seekTo(ms = startPosition)
@@ -174,7 +183,7 @@ class PlayVideoFragment : Fragment(), BaseFragmentInterface {
         })
     }
 
-    private fun onError(error: ArcXPContentError) {
+    private fun onError(error: ArcXPException) {
         returnHome()
         showSnackBar(error, binding.root, R.id.error_message, false, requireActivity())
     }
@@ -184,11 +193,11 @@ class PlayVideoFragment : Fragment(), BaseFragmentInterface {
         _binding = null
     }
 
-   fun onBackPressedHandler() {
+    fun onBackPressedHandler() {
         if (videoHasStartedPlayback && vm.arcMediaPlayer?.isControlsVisible == true) {
             vm.arcMediaPlayer?.hideControls()
         } else {
-            endPlayHandler?.removeCallbacks(endPlayRunnable)
+            endPlayHandler.removeCallbacks(endPlayRunnable)
             if (isThisVideoLive) {
                 vm.cleanupVideoOnClose()
             } else {

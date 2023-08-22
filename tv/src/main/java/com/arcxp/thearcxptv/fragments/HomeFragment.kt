@@ -9,12 +9,12 @@ import androidx.leanback.widget.FocusHighlight.ZOOM_FACTOR_SMALL
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.arc.arcvideo.model.ArcVideoStreamVirtualChannel
-import com.arcxp.content.sdk.extendedModels.ArcXPCollection
-import com.arcxp.content.sdk.models.ArcXPContentError
-import com.arcxp.content.sdk.models.ArcXPContentSDKErrorType
-import com.arcxp.content.sdk.util.Failure
-import com.arcxp.content.sdk.util.Success
+import com.arcxp.commons.throwables.ArcXPException
+import com.arcxp.commons.throwables.ArcXPSDKErrorType
+import com.arcxp.video.model.ArcVideoStreamVirtualChannel
+import com.arcxp.content.extendedModels.ArcXPCollection
+import com.arcxp.commons.util.Failure
+import com.arcxp.commons.util.Success
 import com.arcxp.thearcxptv.BaseFragmentInterface
 import com.arcxp.thearcxptv.R
 import com.arcxp.thearcxptv.cardviews.BlankLoadingCardViewPresenter
@@ -82,9 +82,9 @@ class HomeFragment : RowsSupportFragment(), BaseFragmentInterface {
                                 }
                                 is Failure -> {
                                     showSnackBar(
-                                        ArcXPContentError(
-                                            ArcXPContentSDKErrorType.SERVER_ERROR,
-                                            "Collection call failed for ${it.success[rowIndex]}"
+                                        ArcXPException(
+                                            type = ArcXPSDKErrorType.SERVER_ERROR,
+                                            message = "Collection call failed for ${it.success[rowIndex]}"
                                         ),
                                         requireView(),
                                         R.id.error_message,

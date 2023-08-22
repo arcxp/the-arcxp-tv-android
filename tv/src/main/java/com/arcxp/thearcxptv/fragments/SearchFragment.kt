@@ -6,12 +6,12 @@ import android.widget.ProgressBar
 import androidx.leanback.widget.*
 import androidx.leanback.widget.FocusHighlight.ZOOM_FACTOR_SMALL
 import androidx.lifecycle.lifecycleScope
-import com.arcxp.content.sdk.ArcXPContentSDK
-import com.arcxp.content.sdk.extendedModels.*
-import com.arcxp.content.sdk.models.ArcXPContentError
-import com.arcxp.content.sdk.models.ArcXPContentSDKErrorType
-import com.arcxp.content.sdk.util.Failure
-import com.arcxp.content.sdk.util.Success
+import com.arcxp.ArcXPMobileSDK
+import com.arcxp.commons.throwables.ArcXPException
+import com.arcxp.commons.throwables.ArcXPSDKErrorType
+import com.arcxp.commons.util.Failure
+import com.arcxp.commons.util.Success
+import com.arcxp.content.extendedModels.*
 import com.arcxp.thearcxptv.BaseFragmentInterface
 import com.arcxp.thearcxptv.R
 import com.arcxp.thearcxptv.cardviews.VideoCardViewPresenter
@@ -25,7 +25,7 @@ class SearchFragment : SearchSupportFragment(), SearchSupportFragment.SearchResu
 
     private val vm: MainViewModel by sharedViewModel()
 
-    private val mRowsAdapter = ArrayObjectAdapter(object: ListRowPresenter(ZOOM_FACTOR_SMALL) {
+    private val mRowsAdapter = ArrayObjectAdapter(object : ListRowPresenter(ZOOM_FACTOR_SMALL) {
         override fun isUsingDefaultListSelectEffect() = false
 
     }.apply {
@@ -71,22 +71,27 @@ class SearchFragment : SearchSupportFragment(), SearchSupportFragment.SearchResu
     }
 
     private fun search(query: String) {
-        ArcXPContentSDK.contentManager().searchVideos(
-                searchTerm = query,
-                from = 0,
-                size = 20
-            ).observe(viewLifecycleOwner) {
+        ArcXPMobileSDK.contentManager().searchVideos(
+            searchTerm = query,
+            from = 0,
+            size = 20
+        ).observe(viewLifecycleOwner) {
             progressBar.visibility = View.INVISIBLE
-                when (it) {
-                    is Success -> {
-                        populateData(it.success)
-                    }
-                    is Failure -> {
-                        showSnackBar(ArcXPContentError(ArcXPContentSDKErrorType.SERVER_ERROR, it.failure.message), requireView(), R.id.error_message, false, requireActivity())
-                    }
+            when (it) {
+                is Success -> {
+                    populateData(it.success)
                 }
-
+                is Failure -> {
+                    showSnackBar(
+                        ArcXPException(
+                            type = ArcXPSDKErrorType.SERVER_ERROR,
+                            message = it.failure.message
+                        ), requireView(), R.id.error_message, false, requireActivity()
+                    )
+                }
             }
+
+        }
     }
 
     private fun populateData(response: Map<Int, ArcXPContentElement>) {

@@ -12,8 +12,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
-import com.arcxp.content.sdk.util.Failure
-import com.arcxp.content.sdk.util.Success
+import com.arcxp.commons.util.Failure
+import com.arcxp.commons.util.Success
 import com.arcxp.thearcxptv.R
 import com.arcxp.thearcxptv.databinding.FragmentMainBinding
 import com.arcxp.thearcxptv.main.MainViewModel

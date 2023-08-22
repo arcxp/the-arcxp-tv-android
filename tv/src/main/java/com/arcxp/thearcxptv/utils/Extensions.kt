@@ -1,7 +1,6 @@
 package com.arcxp.thearcxptv.utils
 
 import android.content.Context
-import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -10,19 +9,13 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.arcxp.content.sdk.ArcXPContentSDK
-import com.arcxp.content.sdk.models.ArcXPSection
+import com.arcxp.ArcXPMobileSDK
+import com.arcxp.content.models.ArcXPSection
 import com.arcxp.thearcxptv.cardviews.AbstractCardPresenter
 import com.arcxp.thearcxptv.db.VideoToRemember
-import com.arcxp.thearcxptv.models.LiveVideo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 fun Context.showErrorDialog(
@@ -103,7 +96,7 @@ fun VideoToRemember.formatPositionAndDuration(): CharSequence {
     return "$playPosition / $videoLength"
 }
 
-private fun createFullImageUrl(url: String) = "${ArcXPContentSDK.arcxpContentConfig().baseUrl}$url"
+private fun createFullImageUrl(url: String) = "${ArcXPMobileSDK.baseUrl}$url"
 
 fun AbstractCardPresenter<*>.toast(text: String, long: Boolean = false) = Toast.makeText(
     context,

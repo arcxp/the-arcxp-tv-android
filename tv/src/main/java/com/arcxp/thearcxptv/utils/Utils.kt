@@ -2,11 +2,11 @@ package com.arcxp.thearcxptv.utils
 
 import android.content.Context
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
-import com.arc.arcvideo.model.ArcVideoStreamVirtualChannel
-import com.arc.arcvideo.model.fallback
+import com.arcxp.video.model.ArcVideoStreamVirtualChannel
+import com.arcxp.video.model.fallback
 
-import com.arc.arcvideo.model.thumbnail
-import com.arcxp.content.sdk.extendedModels.*
+import com.arcxp.video.model.thumbnail
+import com.arcxp.content.extendedModels.*
 
 import com.arcxp.thearcxptv.cardviews.Card
 import com.arcxp.thearcxptv.db.VideoToRemember

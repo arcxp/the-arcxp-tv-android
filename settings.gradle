@@ -28,10 +28,7 @@ dependencyResolutionManagement {
 
         //for video sdk internal debug flavor only
         maven {
-            url "${rootDir}/arcxp-video-sdk-android/pal_sdk_repo"
-        }
-        maven {
-            url "${rootDir}/arcxp-video-sdk-android/om_sdk_repo"
+            url "${rootDir}/arcxp-mobile-sdk-android/om_sdk_repo"
         }
     }
 }
@@ -41,7 +38,7 @@ include ':tv'
 
 //client implementation can ignore the following, for internal use only:
 try {
-    include ':arcxp-content-sdk-android', ':arcxp-commerce-sdk-android', ':arcxp-video-sdk-android'
+    include ':arcxp-mobile-sdk-android'
 } catch(Exception ignored) {
     //safe to ignore in default arcPartnersDebug flavor
     //submodules are only for internal use only

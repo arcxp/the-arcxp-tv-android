@@ -17,95 +17,12 @@
         android:layout_marginStart="48dp"
         android:layout_marginEnd="48dp">
 
-        <FrameLayout
-            android:id="@+id/content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TextView
-            android:id="@+id/header"
-            style="@style/SettingsSections"
-            android:text="@string/account"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/username_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/header" />
-
-
-        <RelativeLayout
-            android:id="@+id/createLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/username_tv">
-
-            <TextView
-                android:id="@+id/create_account_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="10dp"
-                android:text="@string/create_account"
-                android:textColor="@color/text_color"
-                android:textSize="20sp" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/ic_chevron_right_24" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/loginLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/createLayout">
-
-            <TextView
-                android:id="@+id/login_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="10dp"
-                android:text="Login"
-                android:textColor="@color/text_color"
-                android:textSize="20sp" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/ic_chevron_right_24" />
-
-        </RelativeLayout>
-
         <TextView
             android:id="@+id/policies"
             style="@style/SettingsSections"
             android:text="@string/policies"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/loginLayout" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/tos_button"
@@ -155,26 +72,11 @@
             app:layout_constraintTop_toBottomOf="@id/versions" />
 
         <TextView
-            android:id="@+id/contentSdkVersion"
+            android:id="@+id/sdkVersion"
             style="@style/SettingsSubsections"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/app_version"
-            tools:text="content version" />
-
-        <TextView
-            android:id="@+id/commerceSdkVersion"
-            style="@style/SettingsSubsections"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/contentSdkVersion"
-            tools:text="commerce version" />
-
-        <TextView
-            android:id="@+id/videoSdkVersion"
-            style="@style/SettingsSubsections"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/commerceSdkVersion"
-            tools:text="video version" />
-
+            tools:text="sdk version" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
